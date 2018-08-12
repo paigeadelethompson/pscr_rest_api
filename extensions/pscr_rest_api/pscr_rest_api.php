@@ -47,17 +47,22 @@ use pscr\lib\model\i_content_renderer;
 class pscr_rest_api implements i_content_renderer {
     private $request;
 
+    function __construct() {
+    }
+
     function set_request($request) {
         $this->request = $request;
     }
 
     function render() {
-        $module_filename = $this->request->get_selected_route_entry_filename();
+        $module_filename = $this->request->get_selected_route_entry_file_name();
         $module_classname = $this->request->get_selected_route_entry_class_name();
 
         logger::_()->info($this, "trying to instantiate ", $module_classname, $module_filename);
         require_once($module_filename);
-
+        logger::_()->info($this, array("included ", $module_filename));
+        //logger::_()->info($this, get_declared_classes());
+        new $module_classname();
         if (class_exists($module_classname)) {
             if (is_a(new $module_classname(), 'pscr\extensions\pscr_rest_api\model\pscr_rest_api')) {
                 $module = (new $module_classname());
@@ -65,6 +70,9 @@ class pscr_rest_api implements i_content_renderer {
                 $module->set_request_instance($this->request);
                 $module->set_response_instance($this->response);
                 $module->handle_request();
+
+                return($module);
+
             }
             else {
                 throw new invalid_argument_exception("found class but class does not extend the pscr_rest_api class or implement the i_pscr_rest_api interface.");
@@ -83,6 +91,7 @@ class pscr_rest_api implements i_content_renderer {
         $this->response = new response($this->request);
         $module = $this->render();
         $content = json_encode($module->get_result());
+        logger::_()->info($this, $content);
         $this->response->set_response_body($content);
         return $this->response;
     }

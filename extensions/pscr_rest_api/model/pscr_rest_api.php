@@ -47,7 +47,7 @@ abstract class pscr_rest_api implements i_pscr_rest_api {
     /**
      * @var html
      */
-    public $result;
+    protected $result;
     /**
      * @var
      */
@@ -76,6 +76,6 @@ abstract class pscr_rest_api implements i_pscr_rest_api {
     }
 
     function get_result() {
-	return $this->result;
+        return $this->result;
     }
 }
