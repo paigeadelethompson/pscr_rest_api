@@ -1,6 +1,9 @@
 {
     "name": "netcrave/pscr_rest_api",
     "type": "library",
+     "license": [
+       "GPL-3.0-or-later"
+    ],
     "autoload": {
         "psr-4": {
             "pscr\\extensions\\pscr_rest_api\\": "extensions/pscr_rest_api/"
